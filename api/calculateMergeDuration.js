@@ -3,6 +3,18 @@ const router = express.Router();
 const axios = require("axios");
 
 router.get("/:owner/:reqrepo/", async (req, res, next) => {
+    /**
+     * 
+     * require the repo owner and repo name
+     * automatically select the eligible pull requests from that repo
+     * calculate the average 
+     * return the duration for each pull request and average of all pull request
+     * mergeDuration : {
+     *  number : pull number
+     *  duration : duration in milli sec
+     * } , 
+     * averageDuration : averageDuration in milli sec
+     */
     const { owner, reqrepo } = req.params;
     
     try{
