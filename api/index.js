@@ -1,5 +1,6 @@
 const router = require("express").Router();
 router.use("/repo", require("./repo"));
+router.use("/calculate_merge_duration", require("./calculateMergeDuration"));
 router.use((req, res, next) => {
     // const error = new Error("404 Not Found");
     // error.status = 404;
