@@ -42,7 +42,7 @@ router.get("/:owner/:reqrepo/pulls", async (req, res, next) => {
 router.get("/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
     try{
-        const pull = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all/${pullnumber}`);
+        const pull = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`);
         pull
             ? res.status(200).json(pull.data)
             : res.status(404).send("not found");
