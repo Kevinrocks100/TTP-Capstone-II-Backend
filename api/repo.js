@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const { Repo } = require("../db/models");
 
 router.get("/:username", async (req, res, next) => {
     const githubUser = req.params.username;
@@ -52,5 +53,63 @@ router.get("/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
 
 });
 
+/**
+ * Followings are CUD of CRUD 
+ * mainly for purposing adding, deleting and updating the repos which the user
+ * wants to track.
+ * Not to be confused with github repo it self, since it don't use any github repo
+ * so won't have any effect on the original repo.
+ */
+/* ------------------------- */
+router.post("/add_repo", async(req, res, next) => {
+    try{
+        if(!req.body){
+            throw new Error ("Empty request body");
+        }
+
+        const addRepo = await Repo.create(req.body);
+        addRepo
+            ? res.status(200).json(addRepo)
+            : res.status(400).send("Can't add repo");
+    } catch(error){
+        next(error);
+    }
+});
+
+router.put("/update_repo/:id", async (req, res, next) => {
+    const repoId = req.params.id;
+    const updateData = req.body;
+    try {
+        if(!req.body){
+            throw new Error ("Empty request body");
+        }
+
+        const updatedRepo = await Repo.update(updateData, {
+            where: {id: repoId}
+        });
+        updatedRepo 
+            ? res.status(200).json(updatedRepo)
+            : res.status(400).send("Update failed");
+
+    } catch (error) {
+        next(error);
+    }
+
+});
+
+router.delete("/delete_repo/:id", async (req, res, next) => {
+    const repoId = req.params.id;
+    try {
+        const deleteRepo = await Repo.destroy({
+            where: {id: repoId}
+        });
+        deleteRepo
+            ? res.status(200).send("Repo deleted")
+            : res.status(400).send("Delete failded");
+    } catch (error) {
+        next(error);
+    }
+});
+/* ------------------------- */
 
 module.exports = router;
