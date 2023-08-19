@@ -47,7 +47,14 @@ router.get("/:owner/:reqrepo/", async (req, res, next) => {
 
 router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
-
+    /**
+     * 
+     * require the repo owner and repo name and the pull number
+     * return the duration of the the PR from created to merged
+     * return error when the Pull number is invalid.
+     * return error if the PR is not closed or haven't merged yet
+     * duration : duration in milliseconds
+     */
     try{
         const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`);
         if(!response) res.status(404).send("not found");
