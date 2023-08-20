@@ -10,7 +10,7 @@ const User = db.define("user", {
         type: DataTypes.STRING, 
         allowNull: false, //won't allow null value and if the input wasn't given put username here
     },
-    githubUserName: {
+    gitHubUserName: {
         type: DataTypes.STRING,
         allowNull: false
     }
