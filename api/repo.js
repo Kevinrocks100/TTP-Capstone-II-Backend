@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const { Repo } = require("../db/models");
+const { Repo, User } = require("../db/models");
 
 router.get("/:username", async (req, res, next) => {
     const githubUser = req.params.username;
@@ -61,21 +61,48 @@ router.get("/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
  * so won't have any effect on the original repo.
  */
 /* ------------------------- */
+/**
+ * add/register a repo to our database, 
+ * keys 
+ * repoUrl : required
+ * repoName : required
+ * repoOwnerUsername : required
+ * userId : optional 
+ */
 router.post("/add_repo", async(req, res, next) => {
+    const { userId } = req.body;
     try{
         if(!req.body){
             throw new Error ("Empty request body");
         }
 
-        const addRepo = await Repo.create(req.body);
-        addRepo
-            ? res.status(200).json(addRepo)
+        let addNewRepo = await Repo.create(req.body);
+        if(addNewRepo && userId){
+            const user = await User.findByPk(userId);
+            if (!user) req.status(404).send("User not found");
+            await addNewRepo.addUser(user);
+            console.log(addNewRepo);
+            addNewRepo = await Repo.findByPk(addNewRepo.id, {
+                include: User
+            }); 
+        }
+        addNewRepo
+            ? res.status(200).json(addNewRepo)
             : res.status(400).send("Can't add repo");
+
     } catch(error){
         next(error);
     }
 });
-
+/**
+ * update a repo from our database, 
+ * params
+ * id : repo id
+ * keys 
+ * repoUrl : optional
+ * repoName : optional
+ * repoOwnerUsername : optional 
+ */
 router.put("/update_repo/:id", async (req, res, next) => {
     const repoId = req.params.id;
     const updateData = req.body;
@@ -96,7 +123,11 @@ router.put("/update_repo/:id", async (req, res, next) => {
     }
 
 });
-
+/**
+ * delete a repo from our database, 
+ * params
+ * id : repo id 
+ */
 router.delete("/delete_repo/:id", async (req, res, next) => {
     const repoId = req.params.id;
     try {
