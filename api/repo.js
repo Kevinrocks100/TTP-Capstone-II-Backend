@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const { Repo, User } = require("../db/models");
-
+/**
+ * get all the repo which are owned by username
+ * params
+ * username
+ */
 router.get("/:username", async (req, res, next) => {
     const githubUser = req.params.username;
     try {
@@ -14,7 +18,12 @@ router.get("/:username", async (req, res, next) => {
         next(error);
     }
 });
-
+/**
+ * get a requested repo
+ * params
+ * owner - repo owner
+ * reqrepo - name of the repo
+ */
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     const {owner, reqrepo} = req.params;
     try{
@@ -26,7 +35,12 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
         next(error);
     }
 });
-
+/**
+ * get all pulls/pr from the requested repo
+ * params
+ * owner - repo owner
+ * reqrepo - name of the repo
+ */
 router.get("/:owner/:reqrepo/pulls", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
     try{
@@ -39,7 +53,13 @@ router.get("/:owner/:reqrepo/pulls", async (req, res, next) => {
     }
 
 });
-
+/**
+ * get a requested pull from the requested repo
+ * params
+ * owner - repo owner
+ * reqrepo - name of the repo
+ * pullnumber - the number of the PR
+ */
 router.get("/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
     try{
