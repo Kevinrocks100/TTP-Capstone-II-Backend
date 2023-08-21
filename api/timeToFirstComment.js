@@ -12,10 +12,14 @@ const axios = require("axios");
  */
 
 /**
- * 
- * 
+ * give the PR data together with the calculated duration from created to first comment created
+ * params
+ * owner - repo owner
+ * reqrepo - repo name
+ * return
+ * pull request data with the calculated duration. The duration is accessible at timeToFirstComment
  */
-router.get("/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
     try {
         const responseWithCalculatedData = await calculateTimeToFirstCommit(owner, reqrepo);

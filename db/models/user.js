@@ -13,6 +13,10 @@ const User = db.define("user", {
     gitHubUserName: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    accessToken: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 });
 module.exports = User;

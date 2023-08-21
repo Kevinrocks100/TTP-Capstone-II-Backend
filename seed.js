@@ -6,17 +6,20 @@ const userSeed = [
     {
         "id": "firebase_id_1",
         "name": "Knd",
-        "gitHubUserName": "kyawnanda27"
+        "gitHubUserName": "kyawnanda27",
+        "accessToken": "ac1"
     },
     {
         "id": "firebase_id_2",
         "name": "John Doe",
-        "gitHubUserName": "johndoe123"
+        "gitHubUserName": "johndoe123",
+        "accessToken": "ac2"
     },
     {
         "id": "firebase_id_3",
         "name": "Jane Doe",
-        "gitHubUserName": "janedoe123"
+        "gitHubUserName": "janedoe123",
+        "accessToken": "ac1"
     },
 
 ];
