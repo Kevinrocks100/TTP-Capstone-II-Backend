@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-router.get("/:owner/:reqrepo/", async (req, res, next) => {
+router.get("/:owner/:reqrepo", async (req, res, next) => {
     /**
      * 
      * require the repo owner and repo name
@@ -75,4 +75,53 @@ router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) =>
         next (error);
     }
 })
+/**
+ * give the PR data together with the calculated duration from created to merged
+ * params
+ * owner - repo owner
+ * reqrepo - repo name
+ * return
+ * pullRequestData - pull request data with the calculated duration. The duration is accessible
+ *                    at mergeDuration 
+ * averageDuration - calculated average duration in milliseconds
+ */
+
+router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { owner, reqrepo } = req.params;
+    try {
+        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`)
+        if(!response) res.status(404).send("not found");
+        else{
+            const responseWithCalculatedData = await calculateDuration(response.data);
+            responseWithCalculatedData
+                ? res.status(200).json(responseWithCalculatedData)
+                : res.status(400).send("No closed pull request");
+        }
+        
+    } catch (error) {
+        next (error);
+    }
+})
+
+async function calculateDuration(pullRequestsData){
+    let count = 0;
+    let totalDuration = 0;
+    const filteredPullRequestsWithDurationData = await Promise.all(
+        pullRequestsData.map(async pr => {
+        
+            if(pr.state === "closed" && pr.merged_at){
+                const createdAt = new Date(pr.created_at);
+                const merged_at = new Date(pr.merged_at);
+                const mergeDuration = merged_at - createdAt;
+                totalDuration += mergeDuration;
+                count ++;
+                return {...pr, mergeDuration}; 
+            }
+        })
+    )
+    const averageDuration = totalDuration/count;
+    return {pullRequestData: filteredPullRequestsWithDurationData, averageDuration};
+}
+
+
 module.exports = router;
