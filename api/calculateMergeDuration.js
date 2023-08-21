@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-router.get("/:owner/:reqrepo/", async (req, res, next) => {
+router.get("/:owner/:reqrepo", async (req, res, next) => {
     /**
      * 
      * require the repo owner and repo name
