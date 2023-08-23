@@ -28,7 +28,7 @@ router.post("/", (req, res) => {
                         res.status(409).json({ error: "User already registered" });
                     } else {
                         const encryptedToken = encrypt(accessToken)
-                        User.create({id, gitHubUserName, name, encryptedToken})
+                        User.create({id, gitHubUserName, name, accessToken: encryptedToken})
                         //User.create({id, gitHubUserName, name, accessToken}) // if encryption don't work
                             .then((user) => res.json(user))
                             .catch((err) => {
