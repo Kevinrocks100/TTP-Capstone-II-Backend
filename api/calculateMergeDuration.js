@@ -1,14 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const {accessTokenToHeader} = require("./accessTokenToHeader");
 
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     /**
+     * required
+     * header 
+     * Authorization: put the access token here (optional Bearer)
+     * params 
+     * the repo owner and repo name
      * 
-     * require the repo owner and repo name
+     * process
      * automatically select the eligible pull requests from that repo
-     * calculate the average 
-     * return the duration for each pull request and average of all pull request
+     * calculate the average
+     *  
+     * return 
+     * the duration for each pull request and average of all pull request
      * mergeDuration : {
      *  number : pull number
      *  duration : duration in milli sec
@@ -16,9 +24,11 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
      * averageDuration : averageDuration in milli sec
      */
     const { owner, reqrepo } = req.params;
-    
+    const header = accessTokenToHeader(req.headers.authorization);
     try{
-        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`)
+        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
+            headers: header
+        })
         if(!response) res.status(404).send("not found");
         else{
         
@@ -47,16 +57,24 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
 
 router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization);
     /**
+     * header 
+     * Authorization: put the access token here (optional Bearer)
      * 
+     * params
      * require the repo owner and repo name and the pull number
+     * 
+     * returns
      * return the duration of the the PR from created to merged
      * return error when the Pull number is invalid.
      * return error if the PR is not closed or haven't merged yet
      * duration : duration in milliseconds
      */
     try{
-        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`);
+        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`, {
+            headers : header
+        });
         if(!response) res.status(404).send("not found");
         else {
             prData = response.data;
@@ -76,10 +94,15 @@ router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) =>
     }
 })
 /**
+ * 
  * give the PR data together with the calculated duration from created to merged
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
  * params
  * owner - repo owner
  * reqrepo - repo name
+ * 
  * return
  * pullRequestData - pull request data with the calculated duration. The duration is accessible
  *                    at mergeDuration 
@@ -88,8 +111,11 @@ router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) =>
 
 router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization);
     try {
-        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`)
+        const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
+            headers : header
+        })
         if(!response) res.status(404).send("not found");
         else{
             const responseWithCalculatedData = await calculateDuration(response.data);

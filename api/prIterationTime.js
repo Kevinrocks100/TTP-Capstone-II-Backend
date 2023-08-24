@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const {accessTokenToHeader} = require("./accessTokenToHeader");
+let header = ""
 /**
  * logic - PR iteration time
  * get all Prs 
@@ -11,8 +13,21 @@ const axios = require("axios");
  *  put it into the array
  * calculate average use reduce
  */
+/**
+ * give the average of iteration time (the duration between the first and last comment) of all pull requests
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
+ * params
+ * owner - repo owner
+ * reqrepo - repo name
+ * 
+ * return 
+ * percentage : average of iteration time 
+ */
 router.get("/:owner/:reqrepo", async (req, res, next) =>{
     const {owner, reqrepo} = req.params;
+    header = accessTokenToHeader(req.headers.authorization);
     try {
         const pullRequestData = await fetchPullRequests(owner, reqrepo);
         if(!pullRequestData) res.status(400).send("error in fetching pull request");
@@ -35,12 +50,16 @@ router.get("/:owner/:reqrepo", async (req, res, next) =>{
 })
 
 async function fetchPullRequests(owner, repo){
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`,{
+        headers: header
+    });
     return response.data;
 }
 
 async function fetchPullRequestComments(owner, repo, issueNumber){
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`, {
+        headers: header
+    });
     return response.data;
 }
 

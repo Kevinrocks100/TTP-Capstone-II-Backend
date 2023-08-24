@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const { Repo, User } = require("../db/models");
+const {accessTokenToHeader} = require("./accessTokenToHeader");
 /**
  * get all the repo which are owned by username
  * params
@@ -9,8 +10,13 @@ const { Repo, User } = require("../db/models");
  */
 router.get("/:username", async (req, res, next) => {
     const githubUser = req.params.username;
+    const header = accessTokenToHeader(req.headers.authorization);
+    console.log(header);
     try {
-        const allRepos = await axios.get(`https://api.github.com/users/${githubUser}/repos`);
+        const allRepos = await axios.get(`https://api.github.com/users/${githubUser}/repos`,{
+            headers : header
+        });
+        
         allRepos
             ? res.status(200).json(allRepos.data)
             : res.status(404).send("not found");
@@ -26,8 +32,11 @@ router.get("/:username", async (req, res, next) => {
  */
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     const {owner, reqrepo} = req.params;
+    const header = accessTokenToHeader(req.headers.authorization);
     try{
-        const repo = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}`);
+        const repo = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}`, {
+            headers: header
+        });
         repo
             ? res.status(200).json(repo.data)
             : res.status(404).send("not found");
@@ -43,8 +52,11 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
  */
 router.get("/:owner/:reqrepo/pulls", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization);
     try{
-        const pulls = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`);
+        const pulls = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
+            headers : header
+        });
         pulls
             ? res.status(200).json(pulls.data)
             : res.status(404).send("not found");
@@ -62,8 +74,11 @@ router.get("/:owner/:reqrepo/pulls", async (req, res, next) => {
  */
 router.get("/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization);
     try{
-        const pull = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`);
+        const pull = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls/${pullnumber}`,{
+            headers : header
+        });
         pull
             ? res.status(200).json(pull.data)
             : res.status(404).send("not found");

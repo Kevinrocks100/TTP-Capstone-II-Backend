@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const {accessTokenToHeader} = require("./accessTokenToHeader");
+let header = "";
 
 /**
  * logic - Time to first comment
@@ -13,14 +15,19 @@ const axios = require("axios");
 
 /**
  * give the PR data together with the calculated duration from created to first comment created
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
  * params
  * owner - repo owner
  * reqrepo - repo name
+ * 
  * return
  * pull request data with the calculated duration. The duration is accessible at timeToFirstComment
  */
 router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization);
     try {
         const responseWithCalculatedData = await calculateTimeToFirstCommit(owner, reqrepo);
         responseWithCalculatedData
@@ -33,12 +40,16 @@ router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
 });
 
 async function fetchPullRequests(owner, repo) {
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`, {
+        headers: header
+    });
     return response.data;
 }
 
 async function fetchPullRequestsComments(owner, repo, issueNumber) {
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`, {
+        headers: header
+    });
     return response.data;
 }
 
