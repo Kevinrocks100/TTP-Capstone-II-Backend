@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+let header = ""
 
 /**
  * logic - Unreviewed PRs
@@ -10,8 +11,22 @@ const axios = require("axios");
  * -> get approvals? ->is in pullnumber/reviews and its !(state == APPROVED)-> if none then true so targetPRcount++
  * get a percentage
  */
+
+/**
+ * give the percentage of the pull requests that are closed without review
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
+ * params
+ * owner - repo owner
+ * reqrepo - repo name
+ * 
+ * return 
+ * percentage : percentage of unreviewed pull requests
+ */
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization);
     try{
 
         const pullRequestsData = await fetchPullRequests(owner, reqrepo);
@@ -37,12 +52,16 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
 });
 
 async function fetchPullRequests(owner, repo){
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls?state=all`,{
+        headers: header
+    });
     return response.data;
 }
 
 async function fetchPullRequestsReviews(owner, repo, pullNumber){
-    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`);
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`, {
+        headers: header
+    });
     return response.data;
 }
 module.exports = router;

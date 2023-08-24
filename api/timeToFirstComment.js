@@ -15,9 +15,13 @@ let header = "";
 
 /**
  * give the PR data together with the calculated duration from created to first comment created
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
  * params
  * owner - repo owner
  * reqrepo - repo name
+ * 
  * return
  * pull request data with the calculated duration. The duration is accessible at timeToFirstComment
  */
