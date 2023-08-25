@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../db/models/user");
 const admin = require("firebase-admin");
-const {encrypt} = require("../auth/encryption");
+const {encrypt, decrypt} = require("../auth/encryption");
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -39,10 +39,12 @@ admin.initializeApp({
  * if does not work, try using the commented code which does not use encryptedToken
  */
 router.post("/register", async (req, res, next) => {
-    const idToken = req.headers.authorization.split(" ")[1];
+
+    // const idToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = req.body;
     const {accessToken} = req.body;
     try{
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        // const decodedToken = await admin.auth().verifyIdToken(idToken);
         const id = decodedToken.uid;
         const gitHubUserName = decodedToken.username;
         const name = decodedToken.name ? decodedToken.name : decodedToken.username;
@@ -51,6 +53,7 @@ router.post("/register", async (req, res, next) => {
         let user = await User.findOne({where: {id}});
         if(!user){
             const encryptedToken = encrypt(accessToken);
+            // console.log(id, gitHubUserName, name, encryptedToken)
             user = await User.create({id, gitHubUserName, name, accessToken: encryptedToken})
             //user = await User.create({id, gitHubUserName, name, accessToken}) // if encryption doesn't work
         }

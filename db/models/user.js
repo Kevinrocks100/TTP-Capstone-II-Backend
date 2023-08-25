@@ -15,7 +15,7 @@ const User = db.define("user", {
         allowNull: false
     },
     accessToken: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
     }
 });

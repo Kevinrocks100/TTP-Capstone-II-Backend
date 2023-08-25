@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const encryptionKey = crypto.randomBytes(32).toString('hex');
+const encryptionKey = process.env.ENCRYPTION_KEY;
 
 function encrypt(text) {
     const iv = crypto.randomBytes(12); // Initialization Vector (IV)
