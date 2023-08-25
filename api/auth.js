@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../db/models/user");
 const admin = require("firebase-admin");
-const {encrypt} = require("../auth/encryption");
+const {encrypt, decrypt} = require("../auth/encryption");
 
 admin.initializeApp({
   credential: admin.credential.cert({
