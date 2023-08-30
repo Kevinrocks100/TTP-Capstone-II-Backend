@@ -13,10 +13,21 @@ let header = "";
  * use compare github end point to get all commits between the two
  * esp when we use start and end we can get all commits from the start to cur commit 
  */
-
+/**
+ * give the count of commits after the PR was opened together with PR data
+ * header 
+ * Authorization: put the access token here (optional Bearer)
+ * 
+ * params
+ * userName - current user's gitHub userName
+ * owner - repo owner
+ * reqrepo - repo name
+ * 
+ * return 
+ * pull request data with the commit count. The count is accessible at followOnCommitCount 
+ */
 router.get("/:userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { userName, owner, reqrepo } = req.params;
-    console.log("here")
     header = accessTokenToHeader(req.headers.authorization, userName);
     try{
         const responseWithCalculatedData = await calculateCommitCount(owner, reqrepo);
