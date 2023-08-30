@@ -4,6 +4,7 @@ router.use("/calculate_merge_duration", require("./calculateMergeDuration"));
 router.use("/time_to_first_comment", require("./timeToFirstComment"));
 router.use("/unreviewed_pr_percentage",require("./unreviewedPRs"));
 router.use("/responsiveness", require("./responsiveness"))
+router.use("/follow_on_commit", require("./followOnCommit"))
 router.use("/auth", require("./auth"));
 router.use("/user", require("./user"));
 router.use((req, res, next) => {
