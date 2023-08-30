@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require("axios");
 const {accessTokenToHeader} = require("./accessTokenToHeader");
 
-router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:owner/:reqrepo", async (req, res, next) => {
     /**
      * required
      * header 
@@ -24,8 +24,8 @@ router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
      * } , 
      * averageDuration : averageDuration in milli sec
      */
-    const { owner, reqrepo, userName } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization, userName);
+    const { owner, reqrepo } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization, owner);
     try{
         const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
             headers: header

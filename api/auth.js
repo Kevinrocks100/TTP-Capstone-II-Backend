@@ -51,11 +51,14 @@ router.post("/register", async (req, res, next) => {
         // get user data from firebase admin if the 
         // const userRecord = await admin.auth().getUser(uid);
         let user = await User.findOne({where: {id}});
-        if(!user){
+        if (!user){
             const encryptedToken = encrypt(accessToken);
             // console.log(id, gitHubUserName, name, encryptedToken)
             user = await User.create({id, gitHubUserName, name, accessToken: encryptedToken})
             //user = await User.create({id, gitHubUserName, name, accessToken}) // if encryption doesn't work
+        } else {
+            const encryptedToken = encrypt(accessToken);
+            user = await user.update({id, gitHubUserName, name, accessToken: encryptedToken})
         }
         user
             ? res.status(200).json(user)

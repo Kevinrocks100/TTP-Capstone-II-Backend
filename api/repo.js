@@ -10,18 +10,22 @@ console.log("here");
  * user - current user's gitHub userName
  * username
  */
-router.get("/:user/:username", async (req, res, next) => {
+router.get("/:username", async (req, res, next) => {
     const githubUser = req.params.username;
-    const { user } = req.params;
-    const header = await accessTokenToHeader(req.headers.authorization, user);
-    console.log(header);
+    const header = await accessTokenToHeader(req.headers.authorization, githubUser);
     try {
         const allRepos = await axios.get(`https://api.github.com/users/${githubUser}/repos`,{
             headers : header
         });
-        
+        console.log(header);
+        const simplifiedRepos = allRepos.data.map(repo => ({
+            id: repo.id,
+            name: repo.name, 
+            full_name: repo.full_name
+        }));
+
         allRepos
-            ? res.status(200).json(allRepos.data)
+            ? res.status(200).json(simplifiedRepos)
             : res.status(404).send("not found");
     }catch (error){
         next(error);
@@ -34,10 +38,9 @@ router.get("/:user/:username", async (req, res, next) => {
  * owner - repo owner
  * reqrepo - name of the repo
  */
-router.get("/:user/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:owner/:reqrepo", async (req, res, next) => {
     const {owner, reqrepo} = req.params;
-    const { user } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization, user);
+    const header = accessTokenToHeader(req.headers.authorization, owner);
     try{
         const repo = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}`, {
             headers: header
