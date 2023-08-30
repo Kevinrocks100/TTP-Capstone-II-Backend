@@ -19,15 +19,16 @@ let header = ""
  * Authorization: put the access token here (optional Bearer)
  * 
  * params
+ * userName - current user's gitHub userName
  * owner - repo owner
  * reqrepo - repo name
  * 
  * return 
  * percentage : average of iteration time 
  */
-router.get("/:owner/:reqrepo", async (req, res, next) =>{
-    const {owner, reqrepo} = req.params;
-    header = accessTokenToHeader(req.headers.authorization);
+router.get(":userName/:owner/:reqrepo", async (req, res, next) =>{
+    const {userName, owner, reqrepo} = req.params;
+    header = accessTokenToHeader(req.headers.authorization, userName);
     try {
         const pullRequestData = await fetchPullRequests(owner, reqrepo);
         if(!pullRequestData) res.status(400).send("error in fetching pull request");

@@ -3,12 +3,13 @@ const router = express.Router();
 const axios = require("axios");
 const {accessTokenToHeader} = require("./accessTokenToHeader");
 
-router.get("/:owner/:reqrepo", async (req, res, next) => {
+router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
     /**
      * required
      * header 
      * Authorization: put the access token here (optional Bearer)
-     * params 
+     * params
+     * userName - current user's gitHub userName 
      * the repo owner and repo name
      * 
      * process
@@ -23,8 +24,8 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
      * } , 
      * averageDuration : averageDuration in milli sec
      */
-    const { owner, reqrepo } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization);
+    const { owner, reqrepo, userName } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization, userName);
     try{
         const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
             headers: header
@@ -55,14 +56,15 @@ router.get("/:owner/:reqrepo", async (req, res, next) => {
     }
 });
 
-router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
-    const { owner, reqrepo, pullnumber } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization);
+router.get(":userName/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
+    const { owner, reqrepo, pullnumber, userName } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization, userName);
     /**
      * header 
      * Authorization: put the access token here (optional Bearer)
      * 
      * params
+     * userName - current user's gitHub userName
      * require the repo owner and repo name and the pull number
      * 
      * returns
@@ -109,9 +111,9 @@ router.get("/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) =>
  * averageDuration - calculated average duration in milliseconds
  */
 
-router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
-    const { owner, reqrepo } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization);
+router.get(":userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { userName, owner, reqrepo } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization, userName);
     try {
         const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
             headers : header

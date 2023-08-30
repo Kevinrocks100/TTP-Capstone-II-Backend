@@ -24,15 +24,16 @@ let header = "";
  * Authorization: put the access token here (optional Bearer)
  * 
  * params
+ * userName - current user's gitHub userName
  * owner - repo owner
  * reqrepo - repo name
  * 
  * return
  * pull request data with the calculated duration. The duration is accessible at responsivenessData
  */
-router.get("/:owner/:reqrepo", async (req, res, next) => {
-    const { owner, reqrepo } = req.params;
-    header = accessTokenToHeader(req.headers.authorization);
+router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
+    const { owner, reqrepo, userName } = req.params;
+    header = accessTokenToHeader(req.headers.authorization, userName);
     try {
         const responseWithCalculatedData = await calculateResponsiveness(owner, reqrepo);
         responseWithCalculatedData

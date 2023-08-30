@@ -14,9 +14,9 @@ let header = "";
  * esp when we use start and end we can get all commits from the start to cur commit 
  */
 
-router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
-    const { owner, reqrepo } = req.params;
-    header = accessTokenToHeader(req.headers.authorization);
+router.get(":userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { userName, owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization, userName);
     try{
         const responseWithCalculatedData = await calculateCommitCount(owner, reqrepo);
         responseWithCalculatedData
