@@ -26,7 +26,7 @@ let header = ""
  * return 
  * percentage : average of iteration time 
  */
-router.get(":userName/:owner/:reqrepo", async (req, res, next) =>{
+router.get("/:userName/:owner/:reqrepo", async (req, res, next) =>{
     const {userName, owner, reqrepo} = req.params;
     header = accessTokenToHeader(req.headers.authorization, userName);
     try {

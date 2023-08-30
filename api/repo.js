@@ -3,16 +3,17 @@ const router = express.Router();
 const axios = require("axios");
 const { Repo, User } = require("../db/models");
 const {accessTokenToHeader} = require("./accessTokenToHeader");
+console.log("here");
 /**
  * get all the repo which are owned by username
  * params
  * user - current user's gitHub userName
  * username
  */
-router.get(":user/:username", async (req, res, next) => {
+router.get("/:user/:username", async (req, res, next) => {
     const githubUser = req.params.username;
     const { user } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization, user);
+    const header = await accessTokenToHeader(req.headers.authorization, user);
     console.log(header);
     try {
         const allRepos = await axios.get(`https://api.github.com/users/${githubUser}/repos`,{
@@ -33,7 +34,7 @@ router.get(":user/:username", async (req, res, next) => {
  * owner - repo owner
  * reqrepo - name of the repo
  */
-router.get(":user/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:user/:owner/:reqrepo", async (req, res, next) => {
     const {owner, reqrepo} = req.params;
     const { user } = req.params;
     const header = accessTokenToHeader(req.headers.authorization, user);
@@ -55,7 +56,7 @@ router.get(":user/:owner/:reqrepo", async (req, res, next) => {
  * owner - repo owner
  * reqrepo - name of the repo
  */
-router.get(":user/:owner/:reqrepo/pulls", async (req, res, next) => {
+router.get("/:user/:owner/:reqrepo/pulls", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
     const { user } = req.params;
     const header = accessTokenToHeader(req.headers.authorization, user);
@@ -79,7 +80,7 @@ router.get(":user/:owner/:reqrepo/pulls", async (req, res, next) => {
  * reqrepo - name of the repo
  * pullnumber - the number of the PR
  */
-router.get(":user/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
+router.get("/:user/:owner/:reqrepo/pulls/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber } = req.params;
     const { user } = req.params;
     const header = accessTokenToHeader(req.headers.authorization, user);

@@ -31,7 +31,7 @@ let header = "";
  * return
  * pull request data with the calculated duration. The duration is accessible at responsivenessData
  */
-router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
     const { owner, reqrepo, userName } = req.params;
     header = accessTokenToHeader(req.headers.authorization, userName);
     try {

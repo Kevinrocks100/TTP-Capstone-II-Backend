@@ -3,7 +3,7 @@ const router = express.Router();
 const axios = require("axios");
 const {accessTokenToHeader} = require("./accessTokenToHeader");
 
-router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
     /**
      * required
      * header 
@@ -56,7 +56,7 @@ router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
     }
 });
 
-router.get(":userName/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
+router.get("/:userName/:owner/:reqrepo/single_pull/:pullnumber", async (req, res, next) => {
     const { owner, reqrepo, pullnumber, userName } = req.params;
     const header = accessTokenToHeader(req.headers.authorization, userName);
     /**
@@ -111,7 +111,7 @@ router.get(":userName/:owner/:reqrepo/single_pull/:pullnumber", async (req, res,
  * averageDuration - calculated average duration in milliseconds
  */
 
-router.get(":userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
+router.get("/:userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { userName, owner, reqrepo } = req.params;
     const header = accessTokenToHeader(req.headers.authorization, userName);
     try {

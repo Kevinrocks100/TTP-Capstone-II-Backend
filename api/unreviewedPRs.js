@@ -19,13 +19,14 @@ let header = ""
  * Authorization: put the access token here (optional Bearer)
  * 
  * params
+ * userName - current user's gitHub userName
  * owner - repo owner
  * reqrepo - repo name
  * 
  * return 
  * percentage : percentage of unreviewed pull requests
  */
-router.get(":userName/:owner/:reqrepo", async (req, res, next) => {
+router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
     const { owner, reqrepo, userName } = req.params;
     header = accessTokenToHeader(req.headers.authorization, userName);
     try{
