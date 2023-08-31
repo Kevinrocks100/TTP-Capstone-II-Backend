@@ -26,9 +26,9 @@ let header = "";
  * return
  * pull request data with the calculated duration. The duration is accessible at timeToFirstComment
  */
-router.get("/:userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
-    const { owner, reqrepo, userName } = req.params;
-    header = accessTokenToHeader(req.headers.authorization, userName);
+router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization, owner);
     try {
         const responseWithCalculatedData = await calculateTimeToFirstCommit(owner, reqrepo);
         responseWithCalculatedData
