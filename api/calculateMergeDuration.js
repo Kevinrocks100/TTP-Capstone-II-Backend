@@ -111,9 +111,9 @@ router.get("/:userName/:owner/:reqrepo/single_pull/:pullnumber", async (req, res
  * averageDuration - calculated average duration in milliseconds
  */
 
-router.get("/:userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
-    const { userName, owner, reqrepo } = req.params;
-    const header = accessTokenToHeader(req.headers.authorization, userName);
+router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { owner, reqrepo } = req.params;
+    const header = accessTokenToHeader(req.headers.authorization, owner);
     try {
         const response = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}/pulls?state=all`, {
             headers : header

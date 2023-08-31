@@ -26,9 +26,9 @@ let header = "";
  * return 
  * pull request data with the commit count. The count is accessible at followOnCommitCount 
  */
-router.get("/:userName/:owner/:reqrepo/pull_data", async (req, res, next) => {
-    const { userName, owner, reqrepo } = req.params;
-    header = accessTokenToHeader(req.headers.authorization, userName);
+router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
+    const { owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization, owner);
     try{
         const responseWithCalculatedData = await calculateCommitCount(owner, reqrepo);
         responseWithCalculatedData

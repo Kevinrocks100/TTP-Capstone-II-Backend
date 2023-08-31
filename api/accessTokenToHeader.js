@@ -16,7 +16,6 @@ async function accessTokenToHeader(reqAccessToken, gitHubUserName){
         }
         if(userInfo){
             accessToken = decrypt(userInfo.accessToken)
-            console.log(accessToken)
         }
         if(accessToken === ""){
             accessToken =  process.env.GITHUB_TEMP_ACCESS_TOKEN;

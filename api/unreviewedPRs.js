@@ -26,9 +26,9 @@ let header = ""
  * return 
  * percentage : percentage of unreviewed pull requests
  */
-router.get("/:userName/:owner/:reqrepo", async (req, res, next) => {
-    const { owner, reqrepo, userName } = req.params;
-    header = accessTokenToHeader(req.headers.authorization, userName);
+router.get("/:owner/:reqrepo", async (req, res, next) => {
+    const { owner, reqrepo } = req.params;
+    header = accessTokenToHeader(req.headers.authorization, owner);
     try{
 
         const pullRequestsData = await fetchPullRequests(owner, reqrepo);
