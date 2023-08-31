@@ -16,6 +16,7 @@ async function accessTokenToHeader(reqAccessToken, gitHubUserName){
         }
         if(userInfo){
             accessToken = decrypt(userInfo.accessToken)
+            console.log(accessToken)
         }
         if(accessToken === ""){
             accessToken =  process.env.GITHUB_TEMP_ACCESS_TOKEN;
@@ -33,8 +34,9 @@ async function accessTokenToHeader(reqAccessToken, gitHubUserName){
     }
    
     return {
-        Accept: "application/json",
-        Authorization: `Bearer ${accessToken}`
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${accessToken}`, 
+        "X-GitHub-Api-Version": "2022-11-28"
     }
 }
 module.exports = {accessTokenToHeader};
