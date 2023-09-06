@@ -28,7 +28,7 @@ let header = "";
  */
 router.get("/:owner/:reqrepo/pull_data", async (req, res, next) => {
     const { owner, reqrepo } = req.params;
-    header = accessTokenToHeader(req.headers.authorization, owner);
+    header = await accessTokenToHeader(req.headers.authorization, owner);
     try{
         const responseWithCalculatedData = await calculateCommitCount(owner, reqrepo);
         responseWithCalculatedData

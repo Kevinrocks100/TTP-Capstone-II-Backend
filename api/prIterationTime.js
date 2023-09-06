@@ -28,7 +28,7 @@ let header = ""
  */
 router.get("/:owner/:reqrepo", async (req, res, next) =>{
     const {owner, reqrepo} = req.params;
-    header = accessTokenToHeader(req.headers.authorization, owner);
+    header = await accessTokenToHeader(req.headers.authorization, owner);
     try {
         const pullRequestData = await fetchPullRequests(owner, reqrepo);
         if(!pullRequestData) res.status(400).send("error in fetching pull request");

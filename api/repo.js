@@ -38,8 +38,9 @@ router.get("/:username", async (req, res, next) => {
  */
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     const {owner, reqrepo} = req.params;
-    const header = accessTokenToHeader(req.headers.authorization, owner);
+    const header = await accessTokenToHeader(req.headers.authorization, owner);
     try{
+        console.log(header); 
         const repo = await axios.get(`https://api.github.com/repos/${owner}/${reqrepo}`, {
             headers: header
         });

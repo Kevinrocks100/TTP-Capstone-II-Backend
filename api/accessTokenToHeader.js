@@ -33,9 +33,7 @@ async function accessTokenToHeader(reqAccessToken, gitHubUserName){
     }
    
     return {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${accessToken}`, 
-        "X-GitHub-Api-Version": "2022-11-28"
+        Authorization: `token ${accessToken}`, 
     }
 }
 module.exports = {accessTokenToHeader};

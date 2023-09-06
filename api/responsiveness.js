@@ -33,7 +33,7 @@ let header = "";
  */
 router.get("/:owner/:reqrepo", async (req, res, next) => {
     const { owner, reqrepo} = req.params;
-    header = accessTokenToHeader(req.headers.authorization, owner);
+    header = await accessTokenToHeader(req.headers.authorization, owner);
     try {
         const responseWithCalculatedData = await calculateResponsiveness(owner, reqrepo);
         responseWithCalculatedData
